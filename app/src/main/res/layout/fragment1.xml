@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context="com.sample.currencyconverter.fragments.FragmentCurrencyConverter">
 
     <TextView
         android:id="@+id/tvResult"
@@ -22,7 +22,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:onClick="swap"
         android:src="@drawable/ic_swap_horiz_black_24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/secondCountry"
@@ -74,12 +73,11 @@
         app:layout_constraintVertical_bias="0.231" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/btnConvert"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:onClick="convert"
         android:text="Convert"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

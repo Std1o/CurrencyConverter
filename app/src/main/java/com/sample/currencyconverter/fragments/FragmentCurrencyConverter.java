@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -30,6 +32,8 @@ public class FragmentCurrencyConverter extends Fragment {
     Boolean isVisible = false;
     EditText etValue;
     TextView tvFirstCountry, tvSecondCountry, tvResult;
+    Button btnConvert;
+    ImageButton btnSwap;
     String originalCurrency = "RUB";
     String convertToCurrency = "CHF";
 
@@ -44,7 +48,10 @@ public class FragmentCurrencyConverter extends Fragment {
         tvFirstCountry = getActivity().findViewById(R.id.firstCountry);
         tvSecondCountry = getActivity().findViewById(R.id.secondCountry);
         tvResult = getActivity().findViewById(R.id.tvResult);
+        btnConvert = getActivity().findViewById(R.id.btnConvert);
+        btnSwap = getActivity().findViewById(R.id.bt_swap);
         setTextViewClickListeners();
+        setButtonsOnClickListeners();
     }
 
     private void setTextViewClickListeners() {
@@ -54,7 +61,6 @@ public class FragmentCurrencyConverter extends Fragment {
                 showDialog(0);
             }
         });
-
         tvSecondCountry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -63,12 +69,49 @@ public class FragmentCurrencyConverter extends Fragment {
         });
     }
 
-    public void swap(View view) {
-        originalCurrency = tvSecondCountry.getText().toString();
-        convertToCurrency = tvFirstCountry.getText().toString();
-        tvFirstCountry.setText(originalCurrency);
-        tvSecondCountry.setText(convertToCurrency);
-        getActivity().findViewById(R.id.button).callOnClick();
+    private void setButtonsOnClickListeners() {
+        btnConvert.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final double value = Double.parseDouble(etValue.getText().toString());
+                RequestQueue queue = Volley.newRequestQueue(getContext());
+                String url ="https://api.exchangerate-api.com/v4/latest/";
+                StringRequest stringRequest = new StringRequest(Request.Method.GET, url+originalCurrency,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                JSONObject obj;
+
+                                try {
+                                    obj = new JSONObject(response);
+                                    JSONObject firstItem = obj.getJSONObject("rates");
+                                    double currencyRate = Double.parseDouble(firstItem.getString(convertToCurrency));
+                                    double converted = value * currencyRate;
+                                    tvResult.setText(String.valueOf(converted));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                    }
+                });
+                queue.add(stringRequest);
+            }
+        });
+
+        btnSwap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                originalCurrency = tvSecondCountry.getText().toString();
+                convertToCurrency = tvFirstCountry.getText().toString();
+                tvFirstCountry.setText(originalCurrency);
+                tvSecondCountry.setText(convertToCurrency);
+                getActivity().findViewById(R.id.btnConvert).callOnClick();
+            }
+        });
     }
 
     protected void showDialog(final int id) {
@@ -94,35 +137,6 @@ public class FragmentCurrencyConverter extends Fragment {
         });
         builder.setCancelable(false);
         builder.show();
-    }
-
-    public void convert(View view) {
-        final double value = Double.parseDouble(etValue.getText().toString());
-        RequestQueue queue = Volley.newRequestQueue(getContext());
-        String url ="https://api.exchangerate-api.com/v4/latest/";
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url+originalCurrency,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        JSONObject obj;
-
-                        try {
-                            obj = new JSONObject(response);
-                            JSONObject firstItem = obj.getJSONObject("rates");
-                            double currencyRate = Double.parseDouble(firstItem.getString(convertToCurrency));
-                            double converted = value * currencyRate;
-                            tvResult.setText(String.valueOf(converted));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-            }
-        });
-        queue.add(stringRequest);
     }
 
     @Override
