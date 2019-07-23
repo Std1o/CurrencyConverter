@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     TextView tvFirstCountry, tvSecondCountry, tvResult;
     String originalCurrency = "RUB";
     String convertToCurrency = "CHF";
+    int iHateFuckingGit = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
