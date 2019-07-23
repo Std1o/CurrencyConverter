@@ -8,12 +8,19 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -27,6 +34,9 @@ import com.google.android.gms.tasks.Task;
 import com.sample.currencyconverter.MainActivity;
 import com.sample.currencyconverter.R;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import static com.sample.currencyconverter.MainActivity.latitude;
 import static com.sample.currencyconverter.MainActivity.longitude;
 
@@ -37,13 +47,12 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback {
     Boolean isVisible = false;
     private GoogleMap mMap;
     public static boolean permissionsIsGranted = false;
+    TextView textView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle SaveInstanceState){
         View rootView = inflater.inflate(R.layout.fragment2, container, false);
-
         return rootView;
-
     }
 
     @Override
@@ -63,8 +72,36 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback {
             if (permissionsIsGranted && MainActivity.locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 initMap();
                 getCurrentLocation();
+                textView = getActivity().findViewById(R.id.textView);
+                getCurrentWeather();
             }
         }
+    }
+
+    private void getCurrentWeather() {
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+        String url ="http://api.apixu.com/v1/current.json?key=a66fd22f5d0e48f4a4b203035192307&q=Moscow";
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        JSONObject obj;
+
+                        try {
+                            obj = new JSONObject(response);
+                            JSONObject firstItem = obj.getJSONObject("current");
+                            textView.setText(firstItem.getString("temp_c"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+            }
+        });
+        queue.add(stringRequest);
     }
 
     private void getCurrentLocation() {
