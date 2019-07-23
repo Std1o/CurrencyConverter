@@ -111,7 +111,7 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback {
     }
 
     private void showWeather() {
-        textView.setText(temperature + "°C, " + condition + "\nЧувствуется как " + feelsLike + "°C\nСкорость ветра: " + windSpeed + "км/ч\nНаправление ветра: " + windDir);
+        textView.setText(temperature + "°C, " + condition + "\nОщущается как " + feelsLike + "°C\nСкорость ветра: " + windSpeed + " км/ч\nНаправление ветра: " + windDir);
     }
 
     private void getCurrentLocation() {
