@@ -48,6 +48,7 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback {
     private GoogleMap mMap;
     public static boolean permissionsIsGranted = false;
     TextView textView;
+    String temperature, feelsLike, condition,windSpeed, windDir;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle SaveInstanceState){
@@ -90,7 +91,12 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback {
                         try {
                             obj = new JSONObject(response);
                             JSONObject firstItem = obj.getJSONObject("current");
-                            textView.setText(firstItem.getString("temp_c"));
+                            temperature = (firstItem.getString("temp_c"));
+                            feelsLike = (firstItem.getString("feelslike_c"));
+                            windSpeed = (firstItem.getString("wind_kph"));
+                            windDir = (firstItem.getString("wind_dir"));
+                            condition = firstItem.getJSONObject("condition").getString("text");
+                            showWeather();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -102,6 +108,10 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback {
             }
         });
         queue.add(stringRequest);
+    }
+
+    private void showWeather() {
+        textView.setText(temperature + "°C, " + condition + "\nЧувствуется как " + feelsLike + "°C\nСкорость ветра: " + windSpeed + "км/ч\nНаправление ветра: " + windDir);
     }
 
     private void getCurrentLocation() {
