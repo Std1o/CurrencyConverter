@@ -81,7 +81,7 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback {
 
     private void getCurrentWeather() {
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        String url ="http://api.apixu.com/v1//forecast.json?key=a66fd22f5d0e48f4a4b203035192307&q=Moscow&days=2&lang=ru";
+        String url ="http://api.apixu.com/v1//forecast.json?key=a66fd22f5d0e48f4a4b203035192307&days=2&lang=ru&q="+latitude+","+longitude;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override

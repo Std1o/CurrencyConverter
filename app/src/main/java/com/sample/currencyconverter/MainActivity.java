@@ -23,8 +23,8 @@ public class MainActivity extends AppCompatActivity {
 
     CustomPageAdapter mCustomPageAdapter;
     ViewPager mViewPager;
-    public static double latitude = -34;
-    public static double longitude = 151;
+    public static double latitude = 55.7522;
+    public static double longitude = 37.6156;
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     public static LocationManager locationManager;
 
