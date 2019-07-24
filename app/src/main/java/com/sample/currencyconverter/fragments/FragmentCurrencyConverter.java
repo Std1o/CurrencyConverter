@@ -34,8 +34,8 @@ public class FragmentCurrencyConverter extends Fragment {
     TextView tvFirstCountry, tvSecondCountry, tvResult;
     Button btnConvert;
     ImageButton btnSwap;
-    String originalCurrency = "RUB";
-    String convertToCurrency = "CHF";
+    String originalCurrency = "USD";
+    String convertToCurrency = "RUB";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle SaveInstanceState){
@@ -117,7 +117,7 @@ public class FragmentCurrencyConverter extends Fragment {
     protected void showDialog(final int id) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        final String[] mCurrency = {"RUB", "CHF", "EUR", "GBP", "JPY", "UAH", "KZT", "BYN", "TRY", "CNY", "AUD", "CAD", "PLN"};
+        final String[] mCurrency = {"RUB", "USD", "CHF", "EUR", "GBP", "JPY", "UAH", "KZT", "BYN", "TRY", "CNY", "AUD", "CAD", "PLN"};
 
         builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Выберите валюту"); // заголовок для диалога
