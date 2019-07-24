@@ -48,7 +48,7 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback {
     private GoogleMap mMap;
     public static boolean permissionsIsGranted = false;
     TextView textView;
-    String temperature, feelsLike, condition,windSpeed, windDir;
+    String maxtemp_c, mintemp_c, avgtemp_c, maxwind_kph, totalprecip_mm, condition;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle SaveInstanceState){
@@ -81,7 +81,7 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback {
 
     private void getCurrentWeather() {
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        String url ="http://api.apixu.com/v1/current.json?key=a66fd22f5d0e48f4a4b203035192307&q=Moscow";
+        String url ="http://api.apixu.com/v1//forecast.json?key=a66fd22f5d0e48f4a4b203035192307&q=Moscow&days=2&lang=ru";
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
@@ -90,11 +90,12 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback {
 
                         try {
                             obj = new JSONObject(response);
-                            JSONObject firstItem = obj.getJSONObject("current");
-                            temperature = (firstItem.getString("temp_c"));
-                            feelsLike = (firstItem.getString("feelslike_c"));
-                            windSpeed = (firstItem.getString("wind_kph"));
-                            windDir = (firstItem.getString("wind_dir"));
+                            JSONObject firstItem = obj.getJSONObject("forecast").getJSONArray("forecastday").getJSONObject(1).getJSONObject("day");
+                            maxtemp_c = (firstItem.getString("maxtemp_c"));
+                            mintemp_c = (firstItem.getString("mintemp_c"));
+                            avgtemp_c = (firstItem.getString("avgtemp_c"));
+                            maxwind_kph = (firstItem.getString("maxwind_kph"));
+                            totalprecip_mm = (firstItem.getString("totalprecip_mm"));
                             condition = firstItem.getJSONObject("condition").getString("text");
                             showWeather();
                         } catch (JSONException e) {
@@ -111,7 +112,7 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback {
     }
 
     private void showWeather() {
-        textView.setText(temperature + "°C, " + condition + "\nОщущается как " + feelsLike + "°C\nСкорость ветра: " + windSpeed + " км/ч\nНаправление ветра: " + windDir);
+        textView.setText("Состояние: "  + condition + "\nМинимальная температура: " + mintemp_c + "°C" + "\nМаксимальная температура: " + maxtemp_c + "°C\nСредняя температура: " + avgtemp_c + "°C\nКоличество осадков: " + totalprecip_mm + " мм\nМаксимальная скорость ветра: " + maxwind_kph + " км/ч");
     }
 
     private void getCurrentLocation() {
